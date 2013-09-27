@@ -10,6 +10,7 @@ jQuery(function() {
 					.addClass("print-only")
 					.css({
 						'border-collapse': 'collapse',
+						'border': '0',//eliminate default border
 						'width':'100%', 
 						'margin-bottom': '10px'
 	});
