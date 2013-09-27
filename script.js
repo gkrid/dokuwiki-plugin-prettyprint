@@ -1,71 +1,63 @@
-/*window.onload = function()
-{
-document.getElementsByClassName = function(cl) {
-var retnode = [];
-var myclass = new RegExp('\\b'+cl+'\\b');
-var elem = this.getElementsByTagName('*');
-for (var i = 0; i < elem.length; i++) {
-var classes = elem[i].className;
-if (myclass.test(classes)) retnode.push(elem[i]);
-}
-return retnode;
-}; 
+jQuery(function() {
+	var $img = jQuery("#dokuwiki__header img").clone();
+	var $h1 = jQuery("#dokuwiki__content h1:first");
+	if ($h1.length > 0) {
+		var h1 = $h1.text();
+	} else {
+		var h1 = '';
+	}
+	var $table = jQuery("<table>")
+					.addClass("print-only")
+					.css({
+						'border-collapse': 'collapse',
+						'width':'100%', 
+						'margin-bottom': '10px'
+	});
 
-    function addClass(element, value) {
-    if(!element.className) {
-    element.className = value;
-    } else {
-    newClassName = element.className;
-    newClassName+= " ";
-    newClassName+= value;
-    element.className = newClassName;
-    }
-    }
+	var $tr = jQuery("<tr>").appendTo($table);
 
-  var logo_url = document.getElementById("p-logo");
-  var img = logo_url.getElementsByTagName("a")[0].style.backgroundImage;;
+	var cells = [];
 
+	cells.push(jQuery("<td>").append($img));
+	if (h1 !== '')
+	{
+		$new_h1 = $h1.clone();
+		$h1.addClass("no-print");
+		cells.push(jQuery("<td>").append($new_h1));
+	}
 
-  var patt=/^url\(\"(.*)\"\)$/;
-  var date_patt =/^(.*) .*$/;
-  var editor_patt = /^.* przez (.*)$/m
-  var logo=patt.exec(img);
-  if(logo == null)
-  {
-      var patt=/^url\((.*)\)$/;
-      var logo=patt.exec(img);
-  }
-  logo=logo[1];
-  var editor = document.getElementById("lastmod").textContent;
+	$publish = jQuery(".approval");
+	if ($publish.length > 0) {
 
-  var edit = editor_patt.exec(editor)[1]; 
+		var status = JSINFO['status'];
+		var date = JSINFO['date'];
+		var author = JSINFO['author'];
 
+		var loc_status = jQuery('.approval_'+status).find("em").text();
 
-  var bodyContent = document.getElementById("bodyContent");
-  var h1_elm = bodyContent.getElementsByTagName("h1")[0];
-  h1 = h1_elm.textContent;
-  //removing h1
-  addClass(h1_elm, "no-print");
-  var date_time = document.getElementsByClassName("approval_date")[0].textContent;
+		var $main_div = jQuery(".approval");
 
-  var approval = document.getElementsByClassName("approval")[0];
-  var draft = approval.getElementsByTagName("em")[0].textContent;
-  
-  var date =   date_patt.exec(date_time)[1];
-  
-  var globalWrapper = document.getElementById("globalWrapper");
-  
-  body = document.getElementsByTagName("body")[0];
-  container = document.createElement("div");
+		if(status == 'approved')
+			var cont = LANG.plugins.prettyprint.approve+'&nbsp;<strong>'+author+'</strong>';
+		else
+			var cont = LANG.plugins.prettyprint.created+'&nbsp;<strong>'+author+'</strong>';
 
-   cont = '<table style="border-collapse:collapse;width:100%;" class="print"><tr><td style="border-right:2px solid #000;border-bottom:2px solid #000;text-align:center;padding:5px;"><img src="'+logo+'"></td><td style="border-right:2px solid #000;border-bottom:2px solid #000;text-align:center;padding:5px;"><h1>'+h1+'</h1></td><td style="padding:5px;border-bottom:2px solid #000;"><p>Wersja:&nbsp;<b>'+date+'</b><br>Źródło:&nbsp;<b>DokuWiki</b><br>';
-if(draft == 'Approved')
- cont += 'Zatwierdził(a):&nbsp;<b id="opracowal">'+edit+'</b>';
-else
- cont += 'Opracował(a):&nbsp;<b id="opracowal">'+edit+'</b>';
+		cells.push(jQuery("<td>").html('<p style="text-align:left">'+LANG.plugins.prettyprint.state+'&nbsp;<strong>'+loc_status+'</strong><br>'+
+					LANG.plugins.prettyprint.date+'&nbsp;'+date.replace(' ', '&nbsp;')+'<br>'+cont+'</p>'));
+	}
+	for (cell in cells) {
+		var $td = cells[cell];
+		$td.css({
+			'border':'2px solid #000', 
+			'border-top':'0',
+			'text-align': 'center',
+			'vertical-align': 'middle'
+		});
+		$tr.append($td);
+	}
 
- cont += '</p></td><tr></table>';
+	$tr.children().first().css('border-left', '0');
+	$tr.children().last().css('border-right', '0');
 
- container.innerHTML = cont;
- body.insertBefore(container, globalWrapper);
-}*/
+	$table.prependTo("body");
+});
