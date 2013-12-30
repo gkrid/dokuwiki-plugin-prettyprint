@@ -21,6 +21,18 @@ class action_plugin_prettyprint extends DokuWiki_Action_Plugin {
     function register(&$controller) {
 	    $controller->register_hook('DOKUWIKI_STARTED', 'AFTER',  $this, 'add_php_data');
     }
+	private function _get_full_name($name, $meta) {
+		if ($meta['contributor'] != NULL) {
+			if (($contr = $meta['contributor'][$name]) != NULL) {
+				return $contr;
+			} else {
+				if ($name == $meta['user'])
+					return $meta['creator'];
+			}
+		} else {
+			return $meta['creator'];
+		}
+	}
     function add_php_data(&$event, $param) {
 		global $JSINFO, $ID, $REV;
 
@@ -49,16 +61,13 @@ class action_plugin_prettyprint extends DokuWiki_Action_Plugin {
         }
 
 		$JSINFO['date'] = $longdate;
+
 		if ($approver != null) {
-			$JSINFO['author'] = $meta['contributor'][$approver];
+			$JSINFO['author'] = self::_get_full_name($approver, $meta);
 			$JSINFO['status'] = 'approved';
 		} else {
-			$full_name = $meta['contributor'][$meta['last_change']['user']];
-			if ($full_name)
-				$JSINFO['author'] = $full_name;
-			else
-				//probably edition by unlogin user
-				$JSINFO['author'] = $meta['last_change']['user'];
+			$user_name = $meta['last_change']['user'];
+			$JSINFO['author'] = self::_get_full_name($user_name, $meta);
 
 			$JSINFO['status'] = 'draft';
 		}
