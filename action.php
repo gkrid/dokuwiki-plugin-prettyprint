@@ -60,16 +60,14 @@ class action_plugin_prettyprint extends DokuWiki_Action_Plugin {
             }
         }
 
-		$JSINFO['date'] = $longdate;
+	$JSINFO['date'] = $longdate;
 
-		if ($approver != null) {
-			$JSINFO['author'] = self::_get_full_name($approver, $meta);
-			$JSINFO['status'] = 'approved';
-		} else {
-			$user_name = $meta['last_change']['user'];
-			$JSINFO['author'] = self::_get_full_name($user_name, $meta);
-
-			$JSINFO['status'] = 'draft';
-		}
+	$user_name = $meta['last_change']['user'];
+	if ($approver != null) {
+		$JSINFO['status'] = 'approved';
+	} else {
+		$JSINFO['status'] = 'draft';
+	}
+	$JSINFO['author'] = self::_get_full_name($user_name, $meta);
     }
 }
