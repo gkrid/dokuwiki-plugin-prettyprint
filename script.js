@@ -30,22 +30,20 @@ jQuery(function() {
 	$publish = jQuery(".approval");
 	if ($publish.length > 0) {
 
-		var $docInfo = jQuery(".docInfo");
+		var status = JSINFO['status'];
+		var date = JSINFO['date'];
+		var author = JSINFO['author'];
 
-		var status = jQuery(".approval em").text();
-		var date_reg = new RegExp("20[0-9]{2}.*:[0-5][0-9]");
-		var date = date_reg.exec($docInfo.text());
-		date = date.toString();
-		var author = $docInfo.find("bdi:last").text();
+		var loc_status = jQuery('.approval_'+status).find("em").text();
 
 		var $main_div = jQuery(".approval");
 
-		if(jQuery(".approved_yes").length > 0) {
+		if(status == 'approved')
 			var cont = LANG.plugins.prettyprint.approve+'&nbsp;<strong>'+author+'</strong>';
-		} else
+		else
 			var cont = LANG.plugins.prettyprint.created+'&nbsp;<strong>'+author+'</strong>';
 
-		cells.push(jQuery("<td>").html('<p style="text-align:left">'+LANG.plugins.prettyprint.state+'&nbsp;<strong>'+status+'</strong><br>'+
+		cells.push(jQuery("<td>").html('<p style="text-align:left">'+LANG.plugins.prettyprint.state+'&nbsp;<strong>'+loc_status+'</strong><br>'+
 					LANG.plugins.prettyprint.date+'&nbsp;'+date.replace(' ', '&nbsp;')+'<br>'+cont+'</p>'));
 	}
 	for (cell in cells) {
