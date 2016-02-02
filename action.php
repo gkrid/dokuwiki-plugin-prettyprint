@@ -18,7 +18,7 @@ require_once DOKU_PLUGIN.'syntax.php';
  */
 class action_plugin_prettyprint extends DokuWiki_Action_Plugin {
 
-    function register(&$controller) {
+    function register(Doku_Event_Handler $controller) {
 	    $controller->register_hook('DOKUWIKI_STARTED', 'AFTER',  $this, 'add_php_data');
     }
 	private function _get_full_name($name, $meta) {
